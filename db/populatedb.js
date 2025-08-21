@@ -6,15 +6,23 @@ const SQL = `
 CREATE TABLE IF NOT EXISTS messages (
   id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
   username VARCHAR(20) NOT NULL,
+  title VARCHAR(50) NOT NULL,
   message VARCHAR(255) NOT NULL,
   added TIMESTAMP WITHOUT TIME ZONE
 );
 
+CREATE TABLE IF NOT EXISTS users (
+  username VARCHAR(20) NOT NULL,
+  fname VARCHAR(20) NOT NULL,
+  lname VARCHAR(20) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  status VARCHAR(6) NOT NULL
+);
+
 INSERT INTO
-  messages (username, message)
+  messages (username, title, message)
 VALUES
-  ('Jerin', 'Hi there!'),
-  ('Jerin', 'Enter your message here');
+  ('admin', 'Site rules', 'Login to enter your message, only selected members can see the authors of messages except for admin messages');
 `;
 
 async function main() {
