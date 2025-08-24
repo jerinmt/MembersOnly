@@ -5,7 +5,9 @@ const indexRouter = require("./routes/indexRouter");
 const path = require("node:path");
 const pool = require("./pool");
 const session = require("express-session");//require for session management
-
+const passport = require("passport");//require for authentication
+const LocalStrategy = require("passport-local").Strategy;//require for local strategy
+const pool = require("./db/pool");
 //initialisations
 const app = express();
 const assetsPath = path.join(__dirname, "public");
