@@ -67,6 +67,36 @@ async function logout(req, res, next) {
     res.redirect("/");
   });
 }
+
+async function upgradePost(req, res, next) {
+  try {
+  if(req.body.code === process.env.MEMBER_CODE) {
+    await pool.query("UPDATE users SET status = $1 WHERE id = $2", ["member", req.user.id]);
+    res.redirect("/");
+  } else {
+    res.redirect("/wrongCode");
+  }
+  
+ } catch (error) {
+    console.error(error);
+    next(error);
+   }
+}
+
+async function wrongCodeGet(req, res) {
+  res.render("wrongcode", { links: links });
+}
+
+async function deletePost(req, res, next) {
+  try {
+    const messageId = req.body.messageid;
+    await pool.query("DELETE FROM messages WHERE id = $1", [messageId]);
+    res.redirect("/");
+  } catch (error) {
+    console.error(error);
+    next(error);
+   }
+}
 module.exports = {
-  messagesGet, newMessageGet, newMessagePost, signupGet, signupPost, loginGet, logout
+  messagesGet, newMessageGet, newMessagePost, signupGet, signupPost, loginGet, logout, upgradePost, wrongCodeGet, deletePost
 };

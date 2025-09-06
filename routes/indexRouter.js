@@ -8,7 +8,10 @@ indexRouter.get("/signup", indexController.signupGet);
 indexRouter.post("/signup", indexController.signupPost);
 indexRouter.get("/login", indexController.loginGet);
 indexRouter.get("/logout", indexController.logout);
-indexRouter.get("/new", indexController.newMessageGet);//ONLY AUTHENTICATED USERS CAN POST NEW MESSAGE
+indexRouter.get("/new", indexController.newMessageGet);
 indexRouter.post("/new", indexController.newMessagePost);
+indexRouter.post("/upgrade", indexController.upgradePost);
+indexRouter.get("/wrongCode", indexController.wrongCodeGet);
+indexRouter.post("/delete", indexController.deletePost);
 
 module.exports = indexRouter;

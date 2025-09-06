@@ -77,7 +77,7 @@ app.post(
   "/login",
   passport.authenticate("local", {
     successRedirect: "/login",
-    failureRedirect: "/login"
+    failureRedirect: "/wrongCode",
   })
 );
 app.use("/", indexRouter);

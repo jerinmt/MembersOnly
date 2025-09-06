@@ -8,7 +8,12 @@
   <%- include('navbar', {links: links}) %>
   <% if (locals.user) {%>
     <h1>Logged in as <%- locals.user.fname %> <%- locals.user.lname %></h1>
-    <a href="/logout">LOG OUT</a>
+    <% if(locals.user.status === 'basic') { %>
+    <form action="/upgrade" method="POST">Upgrade to Member
+      <input type="password" name="code" placeholder="Enter the secret code you received to become a member"/>
+      <button type="submit">Become a Member</button>
+  </form>
+  <% } %>
   <% } else { %>
     <h1>LOG IN</h1>
     <form action="/login" method="POST">

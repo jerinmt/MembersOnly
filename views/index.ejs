@@ -8,15 +8,44 @@
     <%- include('navbar', {links: links}) %>
     <h1>The Wall</h1>
     <% if (locals.user) { %>
-      <h2>Welcome <%= locals.user.fname %></h2>
-    <% } %>
-      <form action="/" method="POST" class="newMessage
-    <div class="board">
-        <ul>
+      <h2>Welcome <%= locals.user.fname %> <%= locals.user.lname %></h2>
+      <% if(locals.user.status === 'member' || locals.user.status === 'admin') { %>
+        <div class="board">
+          <ul>
             <% for( let i = 0; i < messages.length; i++) { %>
-            <%- include('messages', {message: messages[i]}); %>
+              <%- include('messages', {message: messages[i]}); %>
+              <% if(locals.user.status === 'admin') { %>
+                <form action="/delete" method="POST">
+                  <input type="hidden" name="messageid" value="<%= messages[i].id %>">
+                  <button type="submit">Delete</button>
+                </form>
+              <% } %>
             <% } %>
-        </ul>
+          </ul>
+        </div>
+      <% } else { %>
+        <div class="board">
+          <ul>
+            <% for( let i = 0; i < messages.length; i++) { %>
+                <% if(messages[i].username != 'admin') { %>
+                  <% messages[i].username = 'Anonymous'; %>
+                <% } %>
+              <%- include('messages', {message: messages[i]}); %>
+            <% } %>
+          </ul>
+        </div>
+      <% } %>
+    <% } else {%>
+    <div class="board">  
+          <ul>
+            <% for( let i = 0; i < messages.length; i++) { %>
+                <% if(messages[i].username != 'admin') { %>
+                  <% messages[i].username = 'Anonymous'; %>
+                <% } %>
+              <%- include('messages', {message: messages[i]}); %>
+            <% } %>
+          </ul>
     </div>
+    <% } %>
   </body>
 </html>
