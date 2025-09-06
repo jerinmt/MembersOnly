@@ -7,6 +7,10 @@
   <body>
     <%- include('navbar', {links: links}) %>
     <h1>The Wall</h1>
+    <% if (locals.user) { %>
+      <h2>Welcome <%= locals.user.fname %></h2>
+    <% } %>
+      <form action="/" method="POST" class="newMessage
     <div class="board">
         <ul>
             <% for( let i = 0; i < messages.length; i++) { %>

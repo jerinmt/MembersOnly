@@ -31,7 +31,6 @@ passport.use(
     try {
       const { rows } = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
       const user = rows[0];
-      console.log(user);
       if (!user) {
         return done(null, false, { message: "Incorrect username" });
       }
@@ -77,7 +76,7 @@ app.use((req, res, next) => {
 app.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/new",
+    successRedirect: "/login",
     failureRedirect: "/login"
   })
 );

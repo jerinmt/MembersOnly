@@ -6,25 +6,30 @@ const links = [
   { href: "/", text: "Home" },
   { href: "new", text: "New" },
   { href: "signup", text: "Sign Up" },
-  { href: "login", text: "Log In" },
+  { href: "login", text: "Account" },
   { href: "logout", text: "Log Out" }
 ];
 
-
 async function messagesGet(req, res) {
     const messages = await db.getAllMessages();
-    res.render("index", { links: links, messages: messages });
+    res.render("index", { links: links, messages: messages, user: req.user });
 }
 
 async function newMessageGet(req, res) {
-    res.render("form", { links: links });
+  if(req.user) {
+    res.render("form", { links: links, user: req.user });
+  } else {
+    res.redirect("/login");
+  }
+    
 }
 
 async function newMessagePost(req, res) {
     const  authorName  = req.body.authorName;
+    const  title  = req.body.newTitle;
     const  newMessage  = req.body.newMessage;
     const  addedDate  = new Date();
-    await db.enterNewMessage(authorName, newMessage, addedDate);
+    await db.enterNewMessage(authorName, title, newMessage, addedDate);
     res.redirect("/");
 }
 

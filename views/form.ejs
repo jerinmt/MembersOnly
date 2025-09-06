@@ -8,11 +8,12 @@
     <%- include('navbar', {links: links}) %>
     <h1>Add new message</h1>
     <form method="POST" action="/new">
-        <label>Enter your name:
-            <input type="text" name="authorName">
+        <input type="hidden" name="authorName" value="<%= user.username %>"/>
+        <label>Enter the title:
+            <input type="text" name="newTitle" required></textarea>
         </label>
         <label>Enter the message:
-            <textarea name="newMessage" cols="20" rows="10"></textarea>
+            <textarea name="newMessage" cols="20" rows="10" required></textarea>
         </label>
         <button type="submit">Post</button>
     </form>
