@@ -48,3 +48,23 @@ form {
 label {
     display: flex;
 }
+
+.codeError {
+    background-color: red;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 100px;
+}
+
+.deleteForm {
+    border: none;   
+}
+.deleteForm button {
+    background-color: black;
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
