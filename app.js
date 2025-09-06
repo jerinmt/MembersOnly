@@ -3,16 +3,16 @@ require("dotenv").config();
 const express = require("express");
 const indexRouter = require("./routes/indexRouter");
 const path = require("node:path");
-const pool = require("./pool");
+const pool = require("./db/pool");
 const session = require("express-session");//require for session management
 const passport = require("passport");//require for authentication
 const LocalStrategy = require("passport-local").Strategy;//require for local strategy
-const pool = require("./db/pool");
 //initialisations
 const app = express();
 const assetsPath = path.join(__dirname, "public");
 //static fiiles
 app.use(express.static(assetsPath));
+const bcrypt = require("bcryptjs");
 
 //views setting
 app.set("views", path.join(__dirname, "views"));
@@ -31,6 +31,7 @@ passport.use(
     try {
       const { rows } = await pool.query("SELECT * FROM users WHERE username = $1", [username]);
       const user = rows[0];
+      console.log(user);
       if (!user) {
         return done(null, false, { message: "Incorrect username" });
       }
@@ -73,6 +74,13 @@ app.use((req, res, next) => {
 
 
 //routing
+app.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/new",
+    failureRedirect: "/login"
+  })
+);
 app.use("/", indexRouter);
 
 // Error handling
