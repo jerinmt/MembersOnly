@@ -1,6 +1,6 @@
 const db = require("../db/queries");
-const bcrypt = require("bcryptjs");
 const pool = require("../db/pool");
+const { body, validationResult } = require("express-validator");
 
 const links = [
   { href: "/", text: "Home" },
@@ -8,6 +8,15 @@ const links = [
   { href: "signup", text: "Sign Up" },
   { href: "login", text: "Account" },
   { href: "logout", text: "Log Out" }
+];
+
+const validateUser = [
+  body("newTitle")
+    .isLength({ min: 1, max: 50 }).withMessage(`Title must be between 1 and 50 characters.`)
+    .escape(),
+  body("newMessage")
+    .isLength({ min: 1, max: 250 }).withMessage(`Message must be between 1 and 250 characters.`)
+    .escape(),
 ];
 
 async function messagesGet(req, res) {
@@ -24,68 +33,25 @@ async function newMessageGet(req, res) {
     
 }
 
-async function newMessagePost(req, res) {
+const newMessagePost = [
+  validateUser,
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).render("form", {
+        title: "Create New Message",
+        errors: errors.array(),
+        links: links,
+        user: req.user,
+      });
+    }
     const  authorName  = req.body.authorName;
     const  title  = req.body.newTitle;
     const  newMessage  = req.body.newMessage;
     const  addedDate  = new Date();
     await db.enterNewMessage(authorName, title, newMessage, addedDate);
     res.redirect("/");
-}
-
-async function signupGet(req, res) {
-    res.render("sign-up-form", { links: links });
-}
-
-async function signupPost(req, res, next) {
-try {
-  const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  const initialStatus = "basic";
-  await pool.query("INSERT INTO users (username, fname, lname, password, status) VALUES ($1, $2, $3, $4, $5)", [
-      req.body.username,
-      req.body.fname,
-      req.body.lname,
-      hashedPassword,
-      initialStatus
-    ]);
-  res.redirect("/");
- } catch (error) {
-    console.error(error);
-    next(error);
-   }
-}
-
-async function loginGet(req, res) {
-    res.render("login-form", { links: links, user: req.user });
-}
-
-async function logout(req, res, next) {
-  req.logout((err) => {
-    if (err) {
-      return next(err);
-    }
-    res.redirect("/");
-  });
-}
-
-async function upgradePost(req, res, next) {
-  try {
-  if(req.body.code === process.env.MEMBER_CODE) {
-    await pool.query("UPDATE users SET status = $1 WHERE id = $2", ["member", req.user.id]);
-    res.redirect("/");
-  } else {
-    res.redirect("/wrongCode");
-  }
-  
- } catch (error) {
-    console.error(error);
-    next(error);
-   }
-}
-
-async function wrongCodeGet(req, res) {
-  res.render("wrongcode", { links: links });
-}
+}];
 
 async function deletePost(req, res, next) {
   try {
@@ -98,5 +64,5 @@ async function deletePost(req, res, next) {
    }
 }
 module.exports = {
-  messagesGet, newMessageGet, newMessagePost, signupGet, signupPost, loginGet, logout, upgradePost, wrongCodeGet, deletePost
+  messagesGet, newMessageGet, newMessagePost, deletePost
 };

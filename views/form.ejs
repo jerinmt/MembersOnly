@@ -6,6 +6,13 @@
   </head>
   <body>
     <%- include('navbar', {links: links}) %>
+    <% if (locals.errors) {%>
+      <ul>
+        <% errors.forEach(function(error) { %>
+          <li><%= error.msg %></li>
+        <% }); %>
+      </ul>
+    <% } %>
     <h1>Add new message</h1>
     <form method="POST" action="/new">
         <input type="hidden" name="authorName" value="<%= user.username %>"/>
